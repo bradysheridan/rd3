@@ -64,6 +64,8 @@ module.exports = createReactClass({
         >
           <g className="rd3-piechart">
             <DataSeries
+              selectedValueTextFill={props.selectedValueTextFill}
+              selectedArcFill={props.selectedArcFill}
               labelTextFill={props.labelTextFill}
               valueTextFill={props.valueTextFill}
               valueTextFormatter={props.valueTextFormatter}
@@ -81,8 +83,11 @@ module.exports = createReactClass({
               showOuterLabels={props.showOuterLabels}
               sectorBorderColor={props.sectorBorderColor}
               hoverAnimation={props.hoverAnimation}
-              onMouseOver={this.onMouseOver}
-              onMouseLeave={this.onMouseLeave}
+
+              // added props
+              onMouseOver={props.onMouseOver}
+              onMouseLeave={props.onMouseLeave}
+              onClickArc={props.onClickArc}
             />
           </g>
         </Chart>

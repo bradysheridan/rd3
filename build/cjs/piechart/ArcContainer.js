@@ -30,26 +30,29 @@ module.exports = createReactClass({
       fill: this.props.fill
     };
   },
-  _animateArc: function _animateArc() {
-    var rect = findDOMNode(this).getBoundingClientRect();
-    this.props.onMouseOver.call(this, rect.right, rect.top, this.props.dataPoint);
+  _mouseover: function _mouseover() {
+    this.props.onMouseOver(this.props.label);
     this.setState({
       fill: shade(this.props.fill, 0.2)
     });
   },
-  _restoreArc: function _restoreArc() {
-    this.props.onMouseLeave.call(this);
+  _mouseleave: function _mouseleave() {
+    this.props.onMouseLeave(this.props.label);
     this.setState({
       fill: this.props.fill
     });
   },
   render: function render() {
     var props = this.props;
+    var isSelected = props.selectedArc === props.label;
 
     return React.createElement(Arc, _extends({}, this.props, {
-      fill: this.state.fill,
-      handleMouseOver: props.hoverAnimation ? this._animateArc : null,
-      handleMouseLeave: props.hoverAnimation ? this._restoreArc : null
+      fill: isSelected ? props.selectedArcFill : this.state.fill,
+      valueTextFill: isSelected ? props.selectedValueTextFill : props.valueTextFill,
+      hoverAnimation: props.hoverAnimation,
+      handleMouseOver: props.hoverAnimation ? this._mouseover : null,
+      handleMouseLeave: props.hoverAnimation ? this._mouseleave : null,
+      handleClick: props.onClickArc
     }));
   }
 });

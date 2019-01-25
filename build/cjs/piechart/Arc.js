@@ -44,7 +44,8 @@ module.exports = createReactClass({
         style: {
           shapeRendering: 'crispEdges',
           textAnchor: 'middle',
-          fill: props.valueTextFill
+          fill: props.valueTextFill,
+          pointerEvents: 'none'
         }
       },
       formattedValue
@@ -83,7 +84,8 @@ module.exports = createReactClass({
           style: {
             textAnchor: 'middle',
             fill: props.labelTextFill,
-            shapeRendering: 'crispEdges'
+            shapeRendering: 'crispEdges',
+            pointerEvents: 'none'
           }
         },
         props.label
@@ -103,7 +105,9 @@ module.exports = createReactClass({
         fill: props.fill,
         stroke: props.sectorBorderColor,
         onMouseOver: props.handleMouseOver,
-        onMouseLeave: props.handleMouseLeave
+        onMouseLeave: props.handleMouseLeave,
+        onClick: props.handleClick,
+        style: { cursor: props.hoverAnimation ? 'pointer' : 'default' }
       }),
       props.showOuterLabels ? this.renderOuterLabel(props, arc) : null,
       props.showInnerLabels ? this.renderInnerLabel(props, arc) : null

@@ -35,6 +35,12 @@ module.exports = createReactClass({
     };
   },
 
+  getInitialState() {
+    return {
+      selectedArc: null,
+    };
+  },
+
   render() {
     const props = this.props;
 
@@ -51,6 +57,8 @@ module.exports = createReactClass({
           endAngle={arc.endAngle}
           outerRadius={props.radius}
           innerRadius={props.innerRadius}
+          selectedValueTextFill={props.selectedValueTextFill}
+          selectedArcFill={props.selectedArcFill}
           labelTextFill={props.labelTextFill}
           valueTextFill={props.valueTextFill}
           valueTextFormatter={props.valueTextFormatter}
@@ -62,9 +70,23 @@ module.exports = createReactClass({
           showOuterLabels={props.showOuterLabels}
           sectorBorderColor={props.sectorBorderColor}
           hoverAnimation={props.hoverAnimation}
+          dataPoint={{ yValue: props.values[idx], seriesName: props.labels[idx] }}
+
+          // added props
+          selectedArc={this.state.selectedArc}
           onMouseOver={props.onMouseOver}
           onMouseLeave={props.onMouseLeave}
-          dataPoint={{ yValue: props.values[idx], seriesName: props.labels[idx] }}
+          onClickArc={() => {
+            const label = props.labels[idx];
+            this.setState({
+              selectedArc: (this.state.selectedArc === label) ? null : label
+            }, () => {
+              props.onClickArc({
+                label,
+                isSelected: this.state.selectedArc === label
+              });
+            });
+          }}
         />
       )
     );

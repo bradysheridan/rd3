@@ -2952,7 +2952,8 @@ module.exports = createReactClass({
       style: {
         shapeRendering: 'crispEdges',
         textAnchor: 'middle',
-        fill: props.valueTextFill
+        fill: props.valueTextFill,
+        pointerEvents: 'none'
       }
     }, formattedValue);
   },
@@ -2983,7 +2984,8 @@ module.exports = createReactClass({
       style: {
         textAnchor: 'middle',
         fill: props.labelTextFill,
-        shapeRendering: 'crispEdges'
+        shapeRendering: 'crispEdges',
+        pointerEvents: 'none'
       }
     }, props.label));
   },
@@ -2997,7 +2999,9 @@ module.exports = createReactClass({
       fill: props.fill,
       stroke: props.sectorBorderColor,
       onMouseOver: props.handleMouseOver,
-      onMouseLeave: props.handleMouseLeave
+      onMouseLeave: props.handleMouseLeave,
+      onClick: props.handleClick,
+      style: { cursor: props.hoverAnimation ? 'pointer' : 'default' }
     }), props.showOuterLabels ? this.renderOuterLabel(props, arc) : null, props.showInnerLabels ? this.renderInnerLabel(props, arc) : null);
   }
 });
@@ -3043,26 +3047,29 @@ module.exports = createReactClass({
       fill: this.props.fill
     };
   },
-  _animateArc: function _animateArc() {
-    var rect = findDOMNode(this).getBoundingClientRect();
-    this.props.onMouseOver.call(this, rect.right, rect.top, this.props.dataPoint);
+  _mouseover: function _mouseover() {
+    this.props.onMouseOver(this.props.label);
     this.setState({
       fill: shade(this.props.fill, 0.2)
     });
   },
-  _restoreArc: function _restoreArc() {
-    this.props.onMouseLeave.call(this);
+  _mouseleave: function _mouseleave() {
+    this.props.onMouseLeave(this.props.label);
     this.setState({
       fill: this.props.fill
     });
   },
   render: function render() {
     var props = this.props;
+    var isSelected = props.selectedArc === props.label;
 
     return React.createElement(Arc, _extends({}, this.props, {
-      fill: this.state.fill,
-      handleMouseOver: props.hoverAnimation ? this._animateArc : null,
-      handleMouseLeave: props.hoverAnimation ? this._restoreArc : null
+      fill: isSelected ? props.selectedArcFill : this.state.fill,
+      valueTextFill: isSelected ? props.selectedValueTextFill : props.valueTextFill,
+      hoverAnimation: props.hoverAnimation,
+      handleMouseOver: props.hoverAnimation ? this._mouseover : null,
+      handleMouseLeave: props.hoverAnimation ? this._mouseleave : null,
+      handleClick: props.onClickArc
     }));
   }
 });
@@ -3105,7 +3112,14 @@ module.exports = createReactClass({
       }
     };
   },
+  getInitialState: function getInitialState() {
+    return {
+      selectedArc: null
+    };
+  },
   render: function render() {
+    var _this = this;
+
     var props = this.props;
 
     var pie = d3.layout.pie().sort(null);
@@ -3119,6 +3133,8 @@ module.exports = createReactClass({
         endAngle: arc.endAngle,
         outerRadius: props.radius,
         innerRadius: props.innerRadius,
+        selectedValueTextFill: props.selectedValueTextFill,
+        selectedArcFill: props.selectedArcFill,
         labelTextFill: props.labelTextFill,
         valueTextFill: props.valueTextFill,
         valueTextFormatter: props.valueTextFormatter,
@@ -3130,9 +3146,23 @@ module.exports = createReactClass({
         showOuterLabels: props.showOuterLabels,
         sectorBorderColor: props.sectorBorderColor,
         hoverAnimation: props.hoverAnimation,
+        dataPoint: { yValue: props.values[idx], seriesName: props.labels[idx]
+
+          // added props
+        }, selectedArc: _this.state.selectedArc,
         onMouseOver: props.onMouseOver,
         onMouseLeave: props.onMouseLeave,
-        dataPoint: { yValue: props.values[idx], seriesName: props.labels[idx] }
+        onClickArc: function onClickArc() {
+          var label = props.labels[idx];
+          _this.setState({
+            selectedArc: _this.state.selectedArc === label ? null : label
+          }, function () {
+            props.onClickArc({
+              label: label,
+              isSelected: _this.state.selectedArc === label
+            });
+          });
+        }
       });
     });
     return React.createElement('g', { className: 'rd3-piechart-pie', transform: props.transform }, arcs);
@@ -3213,6 +3243,8 @@ module.exports = createReactClass({
       title: props.title,
       shouldUpdate: !this.state.changeState
     }, React.createElement('g', { className: 'rd3-piechart' }, React.createElement(DataSeries, {
+      selectedValueTextFill: props.selectedValueTextFill,
+      selectedArcFill: props.selectedArcFill,
       labelTextFill: props.labelTextFill,
       valueTextFill: props.valueTextFill,
       valueTextFormatter: props.valueTextFormatter,
@@ -3229,9 +3261,12 @@ module.exports = createReactClass({
       showInnerLabels: props.showInnerLabels,
       showOuterLabels: props.showOuterLabels,
       sectorBorderColor: props.sectorBorderColor,
-      hoverAnimation: props.hoverAnimation,
-      onMouseOver: this.onMouseOver,
-      onMouseLeave: this.onMouseLeave
+      hoverAnimation: props.hoverAnimation
+
+      // added props
+      , onMouseOver: props.onMouseOver,
+      onMouseLeave: props.onMouseLeave,
+      onClickArc: props.onClickArc
     }))), props.showTooltip ? React.createElement(Tooltip, this.state.tooltip) : null);
   }
 });

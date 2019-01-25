@@ -35,7 +35,14 @@ module.exports = createReactClass({
       }
     };
   },
+  getInitialState: function getInitialState() {
+    return {
+      selectedArc: null
+    };
+  },
   render: function render() {
+    var _this = this;
+
     var props = this.props;
 
     var pie = d3.layout.pie().sort(null);
@@ -49,6 +56,8 @@ module.exports = createReactClass({
         endAngle: arc.endAngle,
         outerRadius: props.radius,
         innerRadius: props.innerRadius,
+        selectedValueTextFill: props.selectedValueTextFill,
+        selectedArcFill: props.selectedArcFill,
         labelTextFill: props.labelTextFill,
         valueTextFill: props.valueTextFill,
         valueTextFormatter: props.valueTextFormatter,
@@ -60,9 +69,23 @@ module.exports = createReactClass({
         showOuterLabels: props.showOuterLabels,
         sectorBorderColor: props.sectorBorderColor,
         hoverAnimation: props.hoverAnimation,
+        dataPoint: { yValue: props.values[idx], seriesName: props.labels[idx] }
+
+        // added props
+        , selectedArc: _this.state.selectedArc,
         onMouseOver: props.onMouseOver,
         onMouseLeave: props.onMouseLeave,
-        dataPoint: { yValue: props.values[idx], seriesName: props.labels[idx] }
+        onClickArc: function onClickArc() {
+          var label = props.labels[idx];
+          _this.setState({
+            selectedArc: _this.state.selectedArc === label ? null : label
+          }, function () {
+            props.onClickArc({
+              label: label,
+              isSelected: _this.state.selectedArc === label
+            });
+          });
+        }
       });
     });
     return React.createElement(
