@@ -9,7 +9,7 @@ npm-debug.log
 *.swp
 
 # npm package
-*.tgz
+# *.tgz
 
 # Build directory
 # build/
