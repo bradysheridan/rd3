@@ -37,7 +37,7 @@ module.exports = createReactClass({
 
   getInitialState() {
     return {
-      selectedArc: null,
+      selectedArc: this.props.initiallySelectedLabel || null,
     };
   },
 
@@ -79,7 +79,9 @@ module.exports = createReactClass({
           onClickArc={() => {
             const label = props.labels[idx];
             this.setState({
-              selectedArc: (this.state.selectedArc === label) ? null : label
+              selectedArc: (this.state.selectedArc === label && true !== props.preventDeselection)
+                ? null
+                : label
             }, () => {
               props.onClickArc({
                 label,

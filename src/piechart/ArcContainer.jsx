@@ -29,14 +29,20 @@ module.exports = createReactClass({
   },
 
   _mouseover() {
-    this.props.onMouseOver(this.props.label);
+    if ('function' === typeof this.props.onMouseOver) {
+      this.props.onMouseOver(this.props.label);
+    }
+    
     this.setState({
       fill: shade(this.props.fill, 0.2)
     });
   },
 
   _mouseleave() {
-    this.props.onMouseLeave(this.props.label);
+    if ('function' === typeof this.props.onMouseLeave) {
+      this.props.onMouseLeave(this.props.label);
+    }
+    
     this.setState({
       fill: this.props.fill
     });

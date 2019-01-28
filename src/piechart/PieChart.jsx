@@ -88,6 +88,8 @@ module.exports = createReactClass({
               onMouseOver={props.onMouseOver}
               onMouseLeave={props.onMouseLeave}
               onClickArc={props.onClickArc}
+              preventDeselection={props.preventDeselection}
+              initiallySelectedLabel={props.initiallySelectedLabel}
             />
           </g>
         </Chart>

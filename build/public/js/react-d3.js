@@ -3048,13 +3048,19 @@ module.exports = createReactClass({
     };
   },
   _mouseover: function _mouseover() {
-    this.props.onMouseOver(this.props.label);
+    if ('function' === typeof this.props.onMouseOver) {
+      this.props.onMouseOver(this.props.label);
+    }
+
     this.setState({
       fill: shade(this.props.fill, 0.2)
     });
   },
   _mouseleave: function _mouseleave() {
-    this.props.onMouseLeave(this.props.label);
+    if ('function' === typeof this.props.onMouseLeave) {
+      this.props.onMouseLeave(this.props.label);
+    }
+
     this.setState({
       fill: this.props.fill
     });
@@ -3114,7 +3120,7 @@ module.exports = createReactClass({
   },
   getInitialState: function getInitialState() {
     return {
-      selectedArc: null
+      selectedArc: this.props.initiallySelectedLabel || null
     };
   },
   render: function render() {
@@ -3155,7 +3161,7 @@ module.exports = createReactClass({
         onClickArc: function onClickArc() {
           var label = props.labels[idx];
           _this.setState({
-            selectedArc: _this.state.selectedArc === label ? null : label
+            selectedArc: _this.state.selectedArc === label && true !== props.preventDeselection ? null : label
           }, function () {
             props.onClickArc({
               label: label,
@@ -3266,7 +3272,9 @@ module.exports = createReactClass({
       // added props
       , onMouseOver: props.onMouseOver,
       onMouseLeave: props.onMouseLeave,
-      onClickArc: props.onClickArc
+      onClickArc: props.onClickArc,
+      preventDeselection: props.preventDeselection,
+      initiallySelectedLabel: props.initiallySelectedLabel
     }))), props.showTooltip ? React.createElement(Tooltip, this.state.tooltip) : null);
   }
 });
