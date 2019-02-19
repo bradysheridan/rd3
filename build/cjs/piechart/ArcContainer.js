@@ -50,7 +50,8 @@ module.exports = createReactClass({
   },
   render: function render() {
     var props = this.props;
-    var isSelected = props.selectedArc === props.label;
+    var isSelected = props.selectedLabel === props.label;
+    var isSelectable = !props.unselectableLabels ? true : props.unselectableLabels.indexOf(props.label) < 0;
 
     return React.createElement(Arc, _extends({}, this.props, {
       fill: isSelected ? props.selectedArcFill : this.state.fill,
@@ -58,7 +59,9 @@ module.exports = createReactClass({
       hoverAnimation: props.hoverAnimation,
       handleMouseOver: props.hoverAnimation ? this._mouseover : null,
       handleMouseLeave: props.hoverAnimation ? this._mouseleave : null,
-      handleClick: props.onClickArc
+      handleClick: function handleClick() {
+        return isSelectable ? props.onClickArc(props.label) : null;
+      }
     }));
   }
 });

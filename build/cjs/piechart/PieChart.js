@@ -105,7 +105,8 @@ module.exports = createReactClass({
             onMouseLeave: props.onMouseLeave,
             onClickArc: props.onClickArc,
             preventDeselection: props.preventDeselection,
-            initiallySelectedLabel: props.initiallySelectedLabel
+            selectedLabel: props.selectedLabel,
+            unselectableLabels: props.unselectableLabels
           })
         )
       ),

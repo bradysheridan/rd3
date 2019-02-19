@@ -32,7 +32,7 @@ module.exports = createReactClass({
     if ('function' === typeof this.props.onMouseOver) {
       this.props.onMouseOver(this.props.label);
     }
-    
+
     this.setState({
       fill: shade(this.props.fill, 0.2)
     });
@@ -42,7 +42,7 @@ module.exports = createReactClass({
     if ('function' === typeof this.props.onMouseLeave) {
       this.props.onMouseLeave(this.props.label);
     }
-    
+
     this.setState({
       fill: this.props.fill
     });
@@ -50,7 +50,8 @@ module.exports = createReactClass({
 
   render() {
     const props = this.props;
-    const isSelected = props.selectedArc === props.label;
+    const isSelected = props.selectedLabel === props.label;
+    const isSelectable = (!props.unselectableLabels) ? true : props.unselectableLabels.indexOf(props.label) < 0;
 
     return (
       <Arc
@@ -60,7 +61,7 @@ module.exports = createReactClass({
         hoverAnimation={props.hoverAnimation}
         handleMouseOver={props.hoverAnimation ? this._mouseover : null}
         handleMouseLeave={props.hoverAnimation ? this._mouseleave : null}
-        handleClick={props.onClickArc}
+        handleClick={() => (isSelectable) ? props.onClickArc(props.label) : null}
       />
     );
   },

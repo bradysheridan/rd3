@@ -35,20 +35,10 @@ module.exports = createReactClass({
       }
     };
   },
-  getInitialState: function getInitialState() {
-    return {
-      selectedArc: this.props.initiallySelectedLabel || null
-    };
-  },
   render: function render() {
-    var _this = this;
-
     var props = this.props;
-
     var pie = d3.layout.pie().sort(null);
-
     var arcData = pie(props.values);
-
     var arcs = arcData.map(function (arc, idx) {
       return React.createElement(ArcContainer, {
         key: idx,
@@ -72,22 +62,14 @@ module.exports = createReactClass({
         dataPoint: { yValue: props.values[idx], seriesName: props.labels[idx] }
 
         // added props
-        , selectedArc: _this.state.selectedArc,
+        , selectedLabel: props.selectedLabel,
         onMouseOver: props.onMouseOver,
         onMouseLeave: props.onMouseLeave,
-        onClickArc: function onClickArc() {
-          var label = props.labels[idx];
-          _this.setState({
-            selectedArc: _this.state.selectedArc === label && true !== props.preventDeselection ? null : label
-          }, function () {
-            props.onClickArc({
-              label: label,
-              isSelected: _this.state.selectedArc === label
-            });
-          });
-        }
+        onClickArc: props.onClickArc,
+        unselectableLabels: props.unselectableLabels
       });
     });
+
     return React.createElement(
       'g',
       { className: 'rd3-piechart-pie', transform: props.transform },

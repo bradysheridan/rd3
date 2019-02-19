@@ -3067,7 +3067,8 @@ module.exports = createReactClass({
   },
   render: function render() {
     var props = this.props;
-    var isSelected = props.selectedArc === props.label;
+    var isSelected = props.selectedLabel === props.label;
+    var isSelectable = !props.unselectableLabels ? true : props.unselectableLabels.indexOf(props.label) < 0;
 
     return React.createElement(Arc, _extends({}, this.props, {
       fill: isSelected ? props.selectedArcFill : this.state.fill,
@@ -3075,7 +3076,9 @@ module.exports = createReactClass({
       hoverAnimation: props.hoverAnimation,
       handleMouseOver: props.hoverAnimation ? this._mouseover : null,
       handleMouseLeave: props.hoverAnimation ? this._mouseleave : null,
-      handleClick: props.onClickArc
+      handleClick: function handleClick() {
+        return isSelectable ? props.onClickArc(props.label) : null;
+      }
     }));
   }
 });
@@ -3118,20 +3121,10 @@ module.exports = createReactClass({
       }
     };
   },
-  getInitialState: function getInitialState() {
-    return {
-      selectedArc: this.props.initiallySelectedLabel || null
-    };
-  },
   render: function render() {
-    var _this = this;
-
     var props = this.props;
-
     var pie = d3.layout.pie().sort(null);
-
     var arcData = pie(props.values);
-
     var arcs = arcData.map(function (arc, idx) {
       return React.createElement(ArcContainer, {
         key: idx,
@@ -3155,22 +3148,14 @@ module.exports = createReactClass({
         dataPoint: { yValue: props.values[idx], seriesName: props.labels[idx]
 
           // added props
-        }, selectedArc: _this.state.selectedArc,
+        }, selectedLabel: props.selectedLabel,
         onMouseOver: props.onMouseOver,
         onMouseLeave: props.onMouseLeave,
-        onClickArc: function onClickArc() {
-          var label = props.labels[idx];
-          _this.setState({
-            selectedArc: _this.state.selectedArc === label && true !== props.preventDeselection ? null : label
-          }, function () {
-            props.onClickArc({
-              label: label,
-              isSelected: _this.state.selectedArc === label
-            });
-          });
-        }
+        onClickArc: props.onClickArc,
+        unselectableLabels: props.unselectableLabels
       });
     });
+
     return React.createElement('g', { className: 'rd3-piechart-pie', transform: props.transform }, arcs);
   }
 });
@@ -3274,7 +3259,8 @@ module.exports = createReactClass({
       onMouseLeave: props.onMouseLeave,
       onClickArc: props.onClickArc,
       preventDeselection: props.preventDeselection,
-      initiallySelectedLabel: props.initiallySelectedLabel
+      selectedLabel: props.selectedLabel,
+      unselectableLabels: props.unselectableLabels
     }))), props.showTooltip ? React.createElement(Tooltip, this.state.tooltip) : null);
   }
 });
