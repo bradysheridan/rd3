@@ -2997,11 +2997,13 @@ module.exports = createReactClass({
     return React.createElement('g', { className: 'rd3-piechart-arc' }, React.createElement('path', {
       d: arc(),
       fill: props.fill,
-      stroke: props.sectorBorderColor,
+      stroke: props.stroke,
+      strokeWidth: props.isSelected ? 2 : 1,
+      shapeRendering: 'crisp-edges',
       onMouseOver: props.handleMouseOver,
       onMouseLeave: props.handleMouseLeave,
       onClick: props.handleClick,
-      style: { cursor: props.hoverAnimation ? 'pointer' : 'default' }
+      style: { cursor: props.hoverAnimation ? 'pointer' : 'default', zIndex: props.isSelected ? 2 : 1 }
     }), props.showOuterLabels ? this.renderOuterLabel(props, arc) : null, props.showInnerLabels ? this.renderInnerLabel(props, arc) : null);
   }
 });
@@ -3071,13 +3073,14 @@ module.exports = createReactClass({
     var isSelectable = !props.unselectableLabels ? true : props.unselectableLabels.indexOf(props.label) < 0;
 
     return React.createElement(Arc, _extends({}, this.props, {
-      fill: isSelected ? props.selectedArcFill : this.state.fill,
-      valueTextFill: isSelected ? props.selectedValueTextFill : props.valueTextFill,
+      fill: '#1a1718',
+      stroke: isSelected ? props.fill : '#373334',
+      valueTextFill: props.fill,
       hoverAnimation: props.hoverAnimation,
       handleMouseOver: props.hoverAnimation ? this._mouseover : null,
       handleMouseLeave: props.hoverAnimation ? this._mouseleave : null,
       handleClick: function handleClick() {
-        return isSelectable ? props.onClickArc(props.label) : null;
+        return isSelectable ? props.onClickArc(props.label, props.idx) : null;
       }
     }));
   }
@@ -3125,9 +3128,21 @@ module.exports = createReactClass({
     var props = this.props;
     var pie = d3.layout.pie().sort(null);
     var arcData = pie(props.values);
-    var arcs = arcData.map(function (arc, idx) {
+
+    var arcs = arcData.filter(function (arc, idx) {
+      return props.unselectableLabels.indexOf(props.labels[idx]) < 0;
+    })
+    // .sort((a, b) => {
+    //   let aLabel = props.labels[props.values.indexOf(a.value)]
+    //   let bLabel = props.labels[props.values.indexOf(b.value)]
+    //   if (aLabel === props.selectedLabel) return -1
+    //   if (bLabel === props.selectedLabel) return 1
+    //   return 0
+    // })
+    .map(function (arc, idx) {
       return React.createElement(ArcContainer, {
         key: idx,
+        idx: idx,
         startAngle: arc.startAngle,
         endAngle: arc.endAngle,
         outerRadius: props.radius,

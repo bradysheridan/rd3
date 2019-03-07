@@ -108,11 +108,13 @@ module.exports = createReactClass({
         <path
           d={arc()}
           fill={props.fill}
-          stroke={props.sectorBorderColor}
+          stroke={props.stroke}
+          strokeWidth={(props.isSelected) ? 2 : 1}
+          shapeRendering="crisp-edges"
           onMouseOver={props.handleMouseOver}
           onMouseLeave={props.handleMouseLeave}
           onClick={props.handleClick}
-          style={{cursor: (props.hoverAnimation) ? 'pointer' : 'default'}}
+          style={{cursor: (props.hoverAnimation) ? 'pointer' : 'default', zIndex: (props.isSelected) ? 2 : 1}}
         />
         {props.showOuterLabels ? this.renderOuterLabel(props, arc) : null}
         {props.showInnerLabels ? this.renderInnerLabel(props, arc) : null}

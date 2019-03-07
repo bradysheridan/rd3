@@ -39,36 +39,47 @@ module.exports = createReactClass({
     const props = this.props;
     const pie = d3.layout.pie().sort(null);
     const arcData = pie(props.values);
-    const arcs = arcData.map((arc, idx) => (
-      <ArcContainer
-        key={idx}
-        startAngle={arc.startAngle}
-        endAngle={arc.endAngle}
-        outerRadius={props.radius}
-        innerRadius={props.innerRadius}
-        selectedValueTextFill={props.selectedValueTextFill}
-        selectedArcFill={props.selectedArcFill}
-        labelTextFill={props.labelTextFill}
-        valueTextFill={props.valueTextFill}
-        valueTextFormatter={props.valueTextFormatter}
-        fill={props.colors(props.colorAccessor(props.data[idx], idx))}
-        value={props.values[idx]}
-        label={props.labels[idx]}
-        width={props.width}
-        showInnerLabels={props.showInnerLabels}
-        showOuterLabels={props.showOuterLabels}
-        sectorBorderColor={props.sectorBorderColor}
-        hoverAnimation={props.hoverAnimation}
-        dataPoint={{ yValue: props.values[idx], seriesName: props.labels[idx] }}
 
-        // added props
-        selectedLabel={props.selectedLabel}
-        onMouseOver={props.onMouseOver}
-        onMouseLeave={props.onMouseLeave}
-        onClickArc={props.onClickArc}
-        unselectableLabels={props.unselectableLabels}
-      />
-    ));
+    const arcs = arcData
+      .filter((arc, idx) => props.unselectableLabels.indexOf(props.labels[idx]) < 0)
+      // .sort((a, b) => {
+      //   let aLabel = props.labels[props.values.indexOf(a.value)]
+      //   let bLabel = props.labels[props.values.indexOf(b.value)]
+      //   if (aLabel === props.selectedLabel) return -1
+      //   if (bLabel === props.selectedLabel) return 1
+      //   return 0
+      // })
+      .map((arc, idx) => (
+        <ArcContainer
+          key={idx}
+          idx={idx}
+          startAngle={arc.startAngle}
+          endAngle={arc.endAngle}
+          outerRadius={props.radius}
+          innerRadius={props.innerRadius}
+          selectedValueTextFill={props.selectedValueTextFill}
+          selectedArcFill={props.selectedArcFill}
+          labelTextFill={props.labelTextFill}
+          valueTextFill={props.valueTextFill}
+          valueTextFormatter={props.valueTextFormatter}
+          fill={props.colors(props.colorAccessor(props.data[idx], idx))}
+          value={props.values[idx]}
+          label={props.labels[idx]}
+          width={props.width}
+          showInnerLabels={props.showInnerLabels}
+          showOuterLabels={props.showOuterLabels}
+          sectorBorderColor={props.sectorBorderColor}
+          hoverAnimation={props.hoverAnimation}
+          dataPoint={{ yValue: props.values[idx], seriesName: props.labels[idx] }}
+
+          // added props
+          selectedLabel={props.selectedLabel}
+          onMouseOver={props.onMouseOver}
+          onMouseLeave={props.onMouseLeave}
+          onClickArc={props.onClickArc}
+          unselectableLabels={props.unselectableLabels}
+        />
+      ));
 
     return (
       <g className="rd3-piechart-pie" transform={props.transform} >

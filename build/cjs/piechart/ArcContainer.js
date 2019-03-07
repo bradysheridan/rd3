@@ -54,13 +54,14 @@ module.exports = createReactClass({
     var isSelectable = !props.unselectableLabels ? true : props.unselectableLabels.indexOf(props.label) < 0;
 
     return React.createElement(Arc, _extends({}, this.props, {
-      fill: isSelected ? props.selectedArcFill : this.state.fill,
-      valueTextFill: isSelected ? props.selectedValueTextFill : props.valueTextFill,
+      fill: '#1a1718',
+      stroke: isSelected ? props.fill : '#373334',
+      valueTextFill: props.fill,
       hoverAnimation: props.hoverAnimation,
       handleMouseOver: props.hoverAnimation ? this._mouseover : null,
       handleMouseLeave: props.hoverAnimation ? this._mouseleave : null,
       handleClick: function handleClick() {
-        return isSelectable ? props.onClickArc(props.label) : null;
+        return isSelectable ? props.onClickArc(props.label, props.idx) : null;
       }
     }));
   }
