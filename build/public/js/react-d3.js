@@ -3075,7 +3075,7 @@ module.exports = createReactClass({
     return React.createElement(Arc, _extends({}, this.props, {
       fill: '#1a1718',
       stroke: isSelected ? props.fill : '#373334',
-      valueTextFill: props.fill,
+      valueTextFill: isSelectable ? props.fill : '#70696a',
       hoverAnimation: props.hoverAnimation,
       handleMouseOver: props.hoverAnimation ? this._mouseover : null,
       handleMouseLeave: props.hoverAnimation ? this._mouseleave : null,
@@ -3129,16 +3129,8 @@ module.exports = createReactClass({
     var pie = d3.layout.pie().sort(null);
     var arcData = pie(props.values);
 
-    var arcs = arcData.filter(function (arc, idx) {
-      return props.unselectableLabels.indexOf(props.labels[idx]) < 0;
-    })
-    // .sort((a, b) => {
-    //   let aLabel = props.labels[props.values.indexOf(a.value)]
-    //   let bLabel = props.labels[props.values.indexOf(b.value)]
-    //   if (aLabel === props.selectedLabel) return -1
-    //   if (bLabel === props.selectedLabel) return 1
-    //   return 0
-    // })
+    var arcs = arcData
+    // .filter((arc, idx) => props.unselectableLabels.indexOf(props.labels[idx]) < 0) // hides unselectable arc segments
     .map(function (arc, idx) {
       return React.createElement(ArcContainer, {
         key: idx,

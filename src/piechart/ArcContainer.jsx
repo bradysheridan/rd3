@@ -53,12 +53,12 @@ module.exports = createReactClass({
     const isSelected = props.selectedLabel === props.label;
     const isSelectable = (!props.unselectableLabels) ? true : props.unselectableLabels.indexOf(props.label) < 0;
 
-    return (
+    return(
       <Arc
         {...this.props}
         fill={'#1a1718'}
         stroke={(isSelected) ? props.fill : '#373334'}
-        valueTextFill={props.fill}
+        valueTextFill={(isSelectable) ? props.fill : '#70696a'}
         hoverAnimation={props.hoverAnimation}
         handleMouseOver={props.hoverAnimation ? this._mouseover : null}
         handleMouseLeave={props.hoverAnimation ? this._mouseleave : null}

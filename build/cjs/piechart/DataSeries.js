@@ -40,16 +40,8 @@ module.exports = createReactClass({
     var pie = d3.layout.pie().sort(null);
     var arcData = pie(props.values);
 
-    var arcs = arcData.filter(function (arc, idx) {
-      return props.unselectableLabels.indexOf(props.labels[idx]) < 0;
-    })
-    // .sort((a, b) => {
-    //   let aLabel = props.labels[props.values.indexOf(a.value)]
-    //   let bLabel = props.labels[props.values.indexOf(b.value)]
-    //   if (aLabel === props.selectedLabel) return -1
-    //   if (bLabel === props.selectedLabel) return 1
-    //   return 0
-    // })
+    var arcs = arcData
+    // .filter((arc, idx) => props.unselectableLabels.indexOf(props.labels[idx]) < 0) // hides unselectable arc segments
     .map(function (arc, idx) {
       return React.createElement(ArcContainer, {
         key: idx,
